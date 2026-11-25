@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#080a09" />
+  <meta name="description" content="末日重启：觉醒者 — HTML5 末世丧尸射击游戏（PC / 手机双端）" />
+  <title>末日重启：觉醒者 · Doomsday Awakening</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/game.css" />
+  <link rel="stylesheet" href="css/ui.css" />
+</head>
+<body>
+<div id="app">
+  <!-- ============ 游戏画布 ============ -->
+  <canvas id="game-canvas" aria-label="游戏画面"></canvas>
+
+  <!-- ============ 画面后期效果 ============ -->
+  <div id="fx-vignette" class="fx-vignette"></div>
+  <div id="fx-damage" class="fx-damage"></div>
+  <div id="fx-scan" class="fx-scan"></div>
+
+  <!-- ============ 游戏 HUD ============ -->
+  <div id="hud" class="hud hidden">
+    <!-- 左上：角色 / 等级 / 血条 / 经验条 -->
+    <div class="hud-left">
+      <div class="hud-portrait">
+        <div class="portrait-mark">林</div>
+        <div class="portrait-scan"></div>
+        <div class="hud-level">Lv.<span id="hud-level">1</span></div>
+      </div>
+      <div class="hud-bars">
+        <div class="bar bar-hp">
+          <div class="bar-fill" id="hud-hp-fill"></div>
+          <div class="bar-label"><span class="bar-icon">HP</span><span id="hud-hp-text">100 / 100</span></div>
+        </div>
+        <div class="bar bar-xp">
+          <div class="bar-fill" id="hud-xp-fill"></div>
+          <div class="bar-label"><span class="bar-icon">EXP</span><span id="hud-xp-text">0 / 50</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中上：波次 / 任务 / 击杀 -->
+    <div class="hud-top">
+      <div class="hud-mission">
+        <span class="mission-tag" id="hud-wave">第一阶段</span>
+        <span class="mission-text" id="hud-mission">击杀 10 只丧尸</span>
+      </div>
+      <div class="hud-kills">击杀 <b id="hud-kills">0</b><span class="kill-sep">/</span><i id="hud-kills-target">10</i></div>
+    </div>
+
+    <!-- Boss 血条 -->
+    <div class="boss-bar hidden" id="boss-bar">
+      <div class="boss-bar-head"><span id="boss-name">巨型变异体</span><span class="boss-tag">BOSS</span></div>
+      <div class="boss-bar-track"><div class="boss-bar-fill" id="boss-fill"></div></div>
+    </div>
+
+    <!-- 右上 / 右下：武器弹药 -->
+    <div class="hud-weapon" id="hud-weapon-panel">
+      <div class="weapon-name" id="hud-weapon">突击步枪</div>
+      <div class="weapon-ammo">
+        <span id="hud-mag">30</span><span class="ammo-sep">/</span><span id="hud-reserve">120</span>
+      </div>
+      <div class="weapon-reload hidden" id="hud-reload">换弹中…</div>
+      <div class="weapon-slots" id="hud-slots"></div>
+    </div>
+
+    <!-- 拾取提示 -->
+    <div class="pickup-hint hidden" id="pickup-hint"><b>E</b><span id="pickup-text">拾取弹药箱</span></div>
+
+    <!-- 暂停按钮 -->
+    <button class="hud-pause" id="hud-pause" type="button" aria-label="暂停">II</button>
+  </div>
+
+  <!-- ============ 触屏操作层 ============ -->
+  <div id="touch-controls" class="touch-controls hidden">
+    <div class="stick-zone" id="stick-move" data-stick="move">
+      <div class="stick-ring"></div>
+      <div class="stick-knob" id="stick-move-knob"></div>
+      <div class="stick-label">移动</div>
+    </div>
+    <div class="stick-zone" id="stick-aim" data-stick="aim">
+      <div class="stick-ring"></div>
+      <div class="stick-knob" id="stick-aim-knob"></div>
+      <div class="stick-label">瞄准 / 射击</div>
+    </div>
+    <div class="touch-buttons">
+      <button class="tbtn tbtn-skill" id="btn-skill" type="button"><span>Q</span>脉冲</button>
+      <button class="tbtn tbtn-switch" id="btn-switch" type="button"><span>⇄</span>武器</button>
+      <button class="tbtn tbtn-pickup" id="btn-pickup" type="button"><span>E</span>拾取</button>
+      <button class="tbtn tbtn-reload" id="btn-reload" type="button"><span>R</span>换弹</button>
+    </div>
+  </div>
+
+  <!-- ============ 主菜单 ============ -->
+  <div id="menu" class="overlay overlay-menu">
+    <div class="menu-sky"></div>
+    <div class="menu-scan"></div>
+    <div class="menu-wrap">
+      <div class="menu-head">
+        <div class="menu-kicker">CHAPTER 01 · SUPERMARKET BREAKOUT</div>
+        <h1 class="menu-logo">
+          <span class="logo-line1">末日重启</span>
+          <span class="logo-line2">觉 醒 者</span>
+        </h1>
+        <div class="menu-sub">DOOMSDAY&nbsp;AWAKENING</div>
+      </div>
+
+      <div class="menu-actions">
+        <button class="btn btn-primary btn-lg" id="btn-start" type="button">
+          <span class="btn-main">开始游戏</span>
+          <span class="btn-sub">ENTER THE STORE</span>
+        </button>
+        <button class="btn" id="btn-intro" type="button">游戏介绍</button>
+        <button class="btn" id="btn-controls" type="button">操作说明</button>
+      </div>
+
+      <div class="menu-settings">
+        <span class="setting-label">音量</span>
+        <input type="range" id="menu-volume" min="0" max="100" value="70" aria-label="音量" />
+        <button class="btn btn-ghost" id="menu-mute" type="button">静音：关</button>
+      </div>
+
+      <div class="menu-brief">
+        <div class="brief-item"><b>CHAPTER 01</b><span>超市突围</span></div>
+        <div class="brief-sep"></div>
+        <div class="brief-item"><b>OBJECTIVE</b><span>三阶段尸潮 + 变异体 Boss</span></div>
+        <div class="brief-sep"></div>
+        <div class="brief-item"><b>EST. TIME</b><span>6 – 10 分钟</span></div>
+      </div>
+
+      <div class="menu-foot">
+        <span>PC：WASD 移动 / 鼠标瞄准射击 / R 换弹 / E 拾取 / Q 技能 / ESC 暂停</span>
+        <span>手机：左摇杆移动 / 右摇杆瞄准射击 / 按钮换弹拾取</span>
+        <span id="menu-record" class="menu-record">最高记录：暂无</span>
+      </div>
+    </div>
+
+    <div class="menu-info hidden" id="menu-info">
+      <h2 id="menu-info-title">游戏介绍</h2>
+      <div class="menu-info-body" id="menu-info-body"></div>
+      <button class="btn btn-primary" id="btn-info-close" type="button">返回</button>
+    </div>
+  </div>
+
+  <!-- ============ 剧情 ============ -->
+  <div id="dialog" class="overlay overlay-dialog hidden">
+    <div class="dialog-box">
+      <div class="dialog-speaker" id="dialog-speaker">林夜</div>
+      <div class="dialog-text" id="dialog-text"></div>
+      <div class="dialog-foot">
+        <span class="dialog-tip">点击任意处继续 · 也可按 空格 / Enter</span>
+        <button class="btn btn-ghost btn-sm" id="dialog-skip" type="button">跳过剧情 &raquo;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 升级面板 ============ -->
+  <div id="upgrade" class="overlay overlay-dark hidden">
+    <div class="panel panel-upgrade">
+      <div class="upgrade-head">
+        <div class="upgrade-kicker">LEVEL UP</div>
+        <h2>等级 <span id="upgrade-level">2</span> · 选择你的进化</h2>
+        <p>击杀丧尸获得的生存能量正在重塑你的身体。</p>
+      </div>
+      <div class="upgrade-cards" id="upgrade-cards"></div>
+      <div class="upgrade-hint">点击卡片选择 · 也可按 1 / 2 / 3 键</div>
+    </div>
+  </div>
+
+  <!-- ============ 暂停 ============ -->
+  <div id="pause" class="overlay overlay-dark hidden">
+    <div class="panel panel-pause">
+      <h2>已暂停</h2>
+      <p class="panel-sub">末世暂时安静了下来。</p>
+      <div class="panel-actions">
+        <button class="btn btn-primary" id="btn-resume" type="button">继续游戏</button>
+        <button class="btn" id="btn-restart" type="button">重新开始</button>
+        <button class="btn btn-ghost" id="btn-menu" type="button">返回主菜单</button>
+      </div>
+      <div class="pause-stats" id="pause-stats"></div>
+    </div>
+  </div>
+
+  <!-- ============ 结算 ============ -->
+  <div id="result" class="overlay overlay-dark hidden">
+    <div class="panel panel-result">
+      <div class="result-kicker" id="result-kicker">CHAPTER 01 COMPLETE</div>
+      <h2 id="result-title">第一章 · 完成</h2>
+      <p class="result-story" id="result-story"></p>
+      <div class="result-stats" id="result-stats"></div>
+      <div class="panel-actions">
+        <button class="btn btn-primary" id="btn-again" type="button">再战一次</button>
+        <button class="btn btn-ghost" id="btn-result-menu" type="button">返回主菜单</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 横屏提示 ============ -->
+  <div id="rotate-hint" class="rotate-hint hidden">
+    <div class="rotate-icon"></div>
+    <div class="rotate-title">请将设备横屏</div>
+    <div class="rotate-sub">本游戏为横屏体验，旋转手机后即可继续。</div>
+    <button class="btn btn-ghost btn-sm" id="btn-rotate-ok" type="button">仍然继续</button>
+  </div>
+
+  <div id="boot-error" class="boot-error hidden"></div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
