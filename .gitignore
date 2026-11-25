@@ -1,0 +1,17 @@
+# 临时脚本 / 中间产物
+.tmp-*.mjs
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# 依赖与日志（本项目无运行时依赖，保留规则以防后续引入）
+node_modules/
+npm-debug.log*
+*.log
+
+# 测试过程产物（保留正式报告与截图，忽略过程日志）
+docs/test-logs/
