@@ -1,0 +1,25 @@
+{
+  "name": "doomsday-awakening",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "末日重启：觉醒者 — HTML5 末世丧尸射击游戏（PC + 手机双端）",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve:test": "python -m http.server 8123",
+    "check": "node tools/check-syntax.mjs",
+    "test": "node tools/headless-test.mjs",
+    "test:browser": "node tools/browser-test.mjs",
+    "test:layout": "node tools/responsive-check.mjs",
+    "verify": "node tools/check-syntax.mjs && node tools/headless-test.mjs",
+    "shots": "node tools/capture-shots.mjs"
+  },
+  "keywords": [
+    "html5-game",
+    "canvas",
+    "zombie",
+    "survivor",
+    "mobile"
+  ],
+  "license": "MIT"
+}
