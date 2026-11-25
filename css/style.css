@@ -1,0 +1,132 @@
+/* =========================================================
+   style.css — 基础布局 / 全局变量 / 画布与画面特效
+   ========================================================= */
+:root {
+  --ink: #060807;
+  --ink-2: #0b0f0d;
+  --panel: rgba(9, 14, 12, 0.86);
+  --panel-solid: #0c1210;
+  --line: rgba(109, 251, 164, 0.18);
+  --line-soft: rgba(160, 190, 172, 0.12);
+  --green: #6dfba4;
+  --green-2: #35e07a;
+  --green-dim: #1d6b41;
+  --red: #ff4d4d;
+  --red-2: #c93030;
+  --amber: #ffb454;
+  --cyan: #4fd6c8;
+  --text: #dbe7dd;
+  --muted: #8fa294;
+  --mono: "JetBrains Mono", "Cascadia Mono", Consolas, "Courier New", monospace;
+  --sans: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+body { touch-action: none; }
+
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #131a16 0%, #080b09 55%, #050706 100%);
+}
+
+/* ---------------- 画布 ---------------- */
+#game-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+  image-rendering: auto;
+  background: #0a0d0b;
+}
+body.touch-mode #game-canvas { cursor: default; }
+
+/* ---------------- 画面特效层 ---------------- */
+.fx-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0) 42%, rgba(0,0,0,0.42) 78%, rgba(0,0,0,0.72) 100%);
+  mix-blend-mode: multiply;
+  z-index: 4;
+}
+
+.fx-damage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(180,24,20,0) 42%, rgba(180,24,20,0.30) 100%);
+  transition: opacity .2s ease-out;
+  z-index: 5;
+}
+.fx-damage.on { opacity: 1; transition: opacity .06s linear; }
+
+.fx-scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .1;
+  z-index: 6;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(160, 255, 200, 0.11) 0px,
+    rgba(160, 255, 200, 0.11) 1px,
+    rgba(0, 0, 0, 0) 3px,
+    rgba(0, 0, 0, 0) 4px
+  );
+}
+@media (max-width: 900px) {
+  .fx-scan { opacity: .06; }
+}
+
+/* ---------------- 通用工具 ---------------- */
+.hidden { display: none !important; }
+
+button { font-family: inherit; color: inherit; }
+
+.boot-error {
+  position: absolute;
+  z-index: 99;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 520px;
+  padding: 20px 24px;
+  background: #14090a;
+  border: 1px solid var(--red-2);
+  color: #ffd7d7;
+  font: 13px/1.7 var(--mono);
+  white-space: pre-wrap;
+}
+
+/* 滚动条（介绍面板内） */
+.menu-info-body::-webkit-scrollbar { width: 6px; }
+.menu-info-body::-webkit-scrollbar-thumb { background: var(--green-dim); border-radius: 3px; }
