@@ -1,0 +1,512 @@
+/* =========================================================
+   game.css — 游戏内 HUD / 触屏摇杆 / 移动端适配
+   ========================================================= */
+
+/* ---------------- HUD 容器 ---------------- */
+.hud {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  font-family: var(--sans);
+  padding: calc(14px + var(--safe-t)) calc(16px + var(--safe-r)) calc(14px + var(--safe-b)) calc(16px + var(--safe-l));
+}
+
+/* ---------- 左上：角色 & 血条 ---------- */
+.hud-left {
+  position: absolute;
+  top: calc(14px + var(--safe-t));
+  left: calc(16px + var(--safe-l));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-portrait {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  background: linear-gradient(160deg, #17231c, #0a100d);
+  border: 1px solid var(--line);
+  clip-path: polygon(0 0, 100% 0, 100% 74%, 74% 100%, 0 100%);
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 22px rgba(53, 224, 122, 0.12);
+}
+.portrait-mark {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--green);
+  text-shadow: 0 0 14px rgba(53, 224, 122, 0.6);
+  letter-spacing: 1px;
+}
+.portrait-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(109,251,164,0.14) 50%, transparent 100%);
+  background-size: 100% 220%;
+  animation: portraitScan 4.5s linear infinite;
+}
+@keyframes portraitScan {
+  0% { background-position: 0 -100%; }
+  100% { background-position: 0 200%; }
+}
+.hud-level {
+  position: absolute;
+  right: -2px;
+  bottom: -6px;
+  padding: 1px 6px;
+  font: 700 11px/1.5 var(--mono);
+  color: #04120a;
+  background: var(--green);
+  clip-path: polygon(4px 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.hud-bars { width: min(30vw, 268px); display: flex; flex-direction: column; gap: 5px; }
+
+.bar {
+  position: relative;
+  height: 19px;
+  background: rgba(4, 8, 6, 0.82);
+  border: 1px solid var(--line-soft);
+  overflow: hidden;
+}
+.bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  transform-origin: left center;
+  transition: width .12s linear;
+}
+.bar-hp .bar-fill {
+  background: linear-gradient(90deg, #8c1d1d, #e03b33 55%, #ff6b57);
+  box-shadow: 0 0 12px rgba(224, 59, 51, 0.45);
+}
+.bar-xp { height: 12px; }
+.bar-xp .bar-fill {
+  background: linear-gradient(90deg, #12633a, #35e07a 70%, #9dffc4);
+  box-shadow: 0 0 10px rgba(53, 224, 122, 0.4);
+}
+.bar-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 6px;
+  font: 700 10px/1 var(--mono);
+  letter-spacing: .06em;
+  color: #f2fff6;
+  text-shadow: 0 1px 2px #000;
+}
+.bar-xp .bar-label { font-size: 9px; color: #d8ffe8; }
+.bar-icon { opacity: .8; }
+
+/* ---------- 中上：任务 ---------- */
+.hud-top {
+  position: absolute;
+  top: calc(14px + var(--safe-t));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  max-width: 46vw;
+}
+.hud-mission {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 8px;
+  background: linear-gradient(90deg, rgba(11,18,14,.92), rgba(11,18,14,.55));
+  border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--green-2);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  white-space: nowrap;
+}
+.mission-tag {
+  font: 700 10px/1.5 var(--mono);
+  color: #05170d;
+  background: var(--green-2);
+  padding: 1px 6px;
+  letter-spacing: .04em;
+}
+.mission-text {
+  font-size: 12.5px;
+  color: #d8ffe6;
+  letter-spacing: .04em;
+}
+.hud-kills {
+  font: 600 11px/1.4 var(--mono);
+  color: var(--muted);
+  letter-spacing: .08em;
+}
+.hud-kills b { color: var(--green); font-size: 14px; }
+.kill-sep { margin: 0 3px; opacity: .5; }
+.hud-kills i { font-style: normal; color: #b9c9bf; }
+
+/* ---------- Boss 血条 ---------- */
+.boss-bar {
+  position: absolute;
+  top: calc(74px + var(--safe-t));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(58vw, 620px);
+  animation: bossIn .5s ease-out;
+}
+@keyframes bossIn {
+  from { opacity: 0; transform: translate(-50%, -12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.boss-bar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font: 700 12px/1.6 var(--mono);
+  letter-spacing: .1em;
+  color: #ffd4d4;
+  margin-bottom: 3px;
+  text-shadow: 0 0 10px rgba(255, 60, 60, .55);
+}
+.boss-tag {
+  font-size: 9px;
+  background: var(--red-2);
+  color: #fff;
+  padding: 1px 6px;
+  letter-spacing: .18em;
+}
+.boss-bar-track {
+  height: 12px;
+  background: rgba(8, 4, 4, .88);
+  border: 1px solid rgba(255, 90, 90, .38);
+  overflow: hidden;
+}
+.boss-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #6b0f0f, #e13b2f 60%, #ff8a5c);
+  box-shadow: 0 0 16px rgba(255, 70, 50, .55);
+  transition: width .15s linear;
+}
+
+/* ---------- 武器面板 ---------- */
+.hud-weapon {
+  position: absolute;
+  right: calc(16px + var(--safe-r));
+  bottom: calc(16px + var(--safe-b));
+  min-width: 176px;
+  padding: 9px 12px 8px;
+  background: linear-gradient(200deg, rgba(12, 19, 15, .92), rgba(8, 12, 10, .8));
+  border: 1px solid var(--line-soft);
+  border-right: 3px solid var(--amber);
+  text-align: right;
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+}
+.weapon-name {
+  font: 600 12px/1.4 var(--sans);
+  color: #cfd8d1;
+  letter-spacing: .08em;
+}
+.weapon-ammo {
+  font: 700 30px/1.1 var(--mono);
+  color: #fff2d8;
+  text-shadow: 0 0 18px rgba(255, 180, 84, .35);
+  letter-spacing: .02em;
+}
+.weapon-ammo .ammo-sep { color: #6d7a71; margin: 0 4px; font-size: 20px; }
+.weapon-ammo #hud-reserve { font-size: 16px; color: #a9b8ae; }
+.weapon-ammo.low #hud-mag { color: var(--red); text-shadow: 0 0 16px rgba(255, 60, 60, .5); }
+.weapon-reload {
+  font: 700 10px/1.4 var(--mono);
+  color: var(--amber);
+  letter-spacing: .16em;
+  animation: blink .7s steps(2, end) infinite;
+}
+@keyframes blink { 50% { opacity: .25; } }
+.weapon-slots {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+  margin-top: 5px;
+}
+.weapon-slot {
+  font: 600 9px/1.5 var(--mono);
+  color: #6e7f74;
+  border: 1px solid rgba(140, 170, 150, .16);
+  padding: 0 5px;
+  letter-spacing: .06em;
+}
+.weapon-slot.owned { color: #cfe6d8; border-color: rgba(140, 220, 170, .3); }
+.weapon-slot.active { color: #06140b; background: var(--green-2); border-color: var(--green-2); }
+
+/* ---------- 拾取提示 ---------- */
+.pickup-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 24%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  background: rgba(8, 14, 11, .9);
+  border: 1px solid rgba(109, 251, 164, .3);
+  font-size: 12.5px;
+  color: #dbffe9;
+  animation: hintFloat 2s ease-in-out infinite;
+  white-space: nowrap;
+}
+.pickup-hint b {
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  background: var(--green-2);
+  color: #05140b;
+  font: 700 12px/1 var(--mono);
+}
+@keyframes hintFloat {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -5px); }
+}
+
+/* ---------- 暂停按钮 ---------- */
+.hud-pause {
+  position: absolute;
+  top: calc(14px + var(--safe-t));
+  right: calc(16px + var(--safe-r));
+  width: 38px;
+  height: 34px;
+  pointer-events: auto;
+  background: rgba(10, 16, 13, .8);
+  border: 1px solid var(--line-soft);
+  border-radius: 2px;
+  color: #b9cfc2;
+  font: 700 12px/1 var(--mono);
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.hud-pause:active { background: rgba(53, 224, 122, .18); }
+
+/* ---------------- 触屏摇杆 ---------------- */
+.touch-controls {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  pointer-events: none;
+}
+
+.stick-zone {
+  position: absolute;
+  bottom: calc(18px + var(--safe-b));
+  width: 152px;
+  height: 152px;
+  pointer-events: auto;
+  touch-action: none;
+  display: grid;
+  place-items: center;
+  opacity: .92;
+}
+#stick-move { left: calc(18px + var(--safe-l)); }
+#stick-aim { right: calc(18px + var(--safe-r)); }
+
+.stick-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(120, 200, 155, .22);
+  background:
+    radial-gradient(circle at center, rgba(20, 32, 26, .34) 0%, rgba(10, 16, 13, .18) 62%, rgba(10, 16, 13, .5) 100%);
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, .5);
+}
+.stick-ring::before,
+.stick-ring::after {
+  content: "";
+  position: absolute;
+  background: rgba(120, 200, 155, .12);
+}
+.stick-ring::before { left: 50%; top: 18%; width: 1px; height: 64%; transform: translateX(-50%); }
+.stick-ring::after { top: 50%; left: 18%; height: 1px; width: 64%; transform: translateY(-50%); }
+
+.stick-knob {
+  position: absolute;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(109, 251, 164, .34), rgba(16, 40, 28, .92) 70%);
+  border: 1.5px solid rgba(109, 251, 164, .45);
+  box-shadow: 0 0 18px rgba(53, 224, 122, .25), inset 0 0 12px rgba(0, 0, 0, .4);
+  transform: translate(0, 0);
+  will-change: transform;
+}
+#stick-aim .stick-knob {
+  background: radial-gradient(circle at 35% 30%, rgba(255, 180, 84, .34), rgba(44, 26, 10, .92) 70%);
+  border-color: rgba(255, 180, 84, .42);
+  box-shadow: 0 0 18px rgba(255, 180, 84, .22), inset 0 0 12px rgba(0, 0, 0, .4);
+}
+.stick-label {
+  position: absolute;
+  bottom: -2px;
+  font: 600 9px/1 var(--mono);
+  letter-spacing: .16em;
+  color: rgba(190, 220, 202, .42);
+}
+
+.touch-buttons {
+  position: absolute;
+  right: calc(186px + var(--safe-r));
+  bottom: calc(20px + var(--safe-b));
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 9px;
+  pointer-events: none;
+}
+.tbtn {
+  pointer-events: auto;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(40, 60, 50, .9), rgba(8, 14, 11, .92) 75%);
+  border: 1.5px solid rgba(140, 190, 165, .26);
+  color: #cfe2d6;
+  font: 600 10px/1.1 var(--sans);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  touch-action: none;
+  user-select: none;
+}
+.tbtn span {
+  font: 700 12px/1 var(--mono);
+  color: var(--green);
+  letter-spacing: .04em;
+}
+.tbtn:active, .tbtn.pressed {
+  background: radial-gradient(circle at 50% 50%, rgba(53, 224, 122, .32), rgba(10, 24, 16, .95) 75%);
+  border-color: rgba(109, 251, 164, .6);
+  transform: scale(.94);
+}
+.tbtn-reload { width: 70px; height: 70px; }
+.tbtn[disabled], .tbtn.locked { opacity: .38; }
+.tbtn.locked span { color: #8b9a91; }
+
+/* ---------------- 移动端布局（横屏手机 / 平板） ---------------- */
+@media (pointer: coarse), (max-width: 1024px) {
+  .hud { padding: calc(8px + var(--safe-t)) calc(10px + var(--safe-r)) calc(8px + var(--safe-b)) calc(10px + var(--safe-l)); }
+
+  .hud-left { top: calc(8px + var(--safe-t)); left: calc(10px + var(--safe-l)); gap: 7px; }
+  .hud-portrait { width: 44px; height: 44px; }
+  .portrait-mark { font-size: 20px; }
+  .hud-level { font-size: 9px; padding: 0 4px; }
+  .hud-bars { width: min(42vw, 190px); gap: 4px; }
+  .bar { height: 15px; }
+  .bar-xp { height: 10px; }
+  .bar-label { font-size: 8.5px; padding: 0 4px; }
+
+  .hud-top { top: calc(8px + var(--safe-t)); max-width: 52vw; gap: 3px; }
+  .hud-mission { padding: 3px 10px 3px 6px; }
+  .mission-text { font-size: 10.5px; }
+  .mission-tag { font-size: 8.5px; padding: 0 4px; }
+  .hud-kills { font-size: 9.5px; }
+  .hud-kills b { font-size: 12px; }
+
+  .boss-bar { top: calc(58px + var(--safe-t)); width: min(64vw, 420px); }
+  .boss-bar-head { font-size: 9.5px; }
+
+  .hud-weapon {
+    right: calc(10px + var(--safe-r));
+    bottom: auto;
+    top: calc(48px + var(--safe-t));
+    min-width: 108px;
+    padding: 5px 9px 5px;
+    text-align: right;
+    border-right-width: 2px;
+  }
+  .weapon-name { font-size: 10px; }
+  .weapon-ammo { font-size: 21px; }
+  .weapon-ammo .ammo-sep { font-size: 14px; margin: 0 2px; }
+  .weapon-ammo #hud-reserve { font-size: 12px; }
+  .weapon-reload { font-size: 8.5px; }
+  .weapon-slots { display: none; }
+
+  .hud-pause { top: calc(8px + var(--safe-t)); right: calc(10px + var(--safe-r)); width: 34px; height: 30px; }
+
+  .pickup-hint { bottom: 31%; font-size: 11px; padding: 4px 10px 4px 4px; }
+  .pickup-hint b { min-width: 18px; height: 18px; font-size: 10px; }
+}
+
+/* 小屏手机（横屏 844x390 等）稍微压缩摇杆 */
+@media (max-height: 430px) {
+  .stick-zone { width: 128px; height: 128px; }
+  .stick-knob { width: 52px; height: 52px; }
+  .stick-label { display: none; }
+  .tbtn { width: 52px; height: 52px; font-size: 9px; }
+  .tbtn-reload { width: 58px; height: 58px; }
+  .touch-buttons { right: calc(158px + var(--safe-r)); bottom: calc(14px + var(--safe-b)); gap: 7px; }
+  .hud-portrait { width: 38px; height: 38px; }
+  .portrait-mark { font-size: 17px; }
+  .hud-bars { width: min(38vw, 168px); }
+  .weapon-ammo { font-size: 18px; }
+  .boss-bar { top: calc(50px + var(--safe-t)); }
+}
+
+/* 竖屏平板：HUD 稍大一些 */
+@media (min-width: 700px) and (orientation: portrait) {
+  .hud-bars { width: 190px; }
+  .hud-top { max-width: 40vw; }
+}
+
+/* ---------------- 战斗提示 / 横幅 ---------------- */
+.hud-toast {
+  position: absolute;
+  left: 50%;
+  top: calc(112px + var(--safe-t));
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  font: 600 12px/1.5 var(--sans);
+  letter-spacing: .06em;
+  color: var(--green);
+  background: rgba(6, 12, 9, .88);
+  border: 1px solid currentColor;
+  border-left-width: 3px;
+  white-space: nowrap;
+  z-index: 12;
+  animation: toastIn .18s ease-out;
+  pointer-events: none;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.hud-banner {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  transform: translateX(-50%);
+  font: 800 clamp(14px, 2.1vw, 22px)/1.4 var(--sans);
+  letter-spacing: .16em;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: 0 0 22px currentColor, 0 2px 8px #000;
+  z-index: 12;
+  animation: bannerIn .32s ease-out;
+  pointer-events: none;
+}
+@keyframes bannerIn {
+  from { opacity: 0; transform: translate(-50%, -14px) scale(.96); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.tbtn.hint {
+  border-color: rgba(109, 251, 164, .65);
+  box-shadow: 0 0 16px rgba(53, 224, 122, .38);
+}
+
+@media (pointer: coarse), (max-width: 1024px) {
+  .hud-toast { top: calc(72px + var(--safe-t)); font-size: 10.5px; padding: 4px 10px; }
+  .hud-banner { top: 34%; font-size: clamp(12px, 3.2vw, 17px); letter-spacing: .1em; }
+}
