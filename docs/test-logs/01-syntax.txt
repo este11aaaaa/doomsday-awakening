@@ -1,0 +1,37 @@
+  ok   js\config.js
+  ok   js\core\AssetManager.js
+  ok   js\core\Camera.js
+  ok   js\core\Collision.js
+  ok   js\core\GameLoop.js
+  ok   js\core\InputManager.js
+  ok   js\core\MathUtils.js
+  ok   js\data\mapData.js
+  ok   js\data\skills.js
+  ok   js\data\story.js
+  ok   js\data\weapons.js
+  ok   js\data\zombies.js
+  ok   js\entities\Boss.js
+  ok   js\entities\Bullet.js
+  ok   js\entities\Loot.js
+  ok   js\entities\Player.js
+  ok   js\entities\Zombie.js
+  ok   js\game.js
+  ok   js\main.js
+  ok   js\render\Renderer.js
+  ok   js\systems\AudioSystem.js
+  ok   js\systems\CombatSystem.js
+  ok   js\systems\LevelSystem.js
+  ok   js\systems\ParticleSystem.js
+  ok   js\systems\SaveSystem.js
+  ok   js\systems\SkillSystem.js
+  ok   js\systems\SpawnSystem.js
+  ok   js\ui\Dialog.js
+  ok   js\ui\HUD.js
+  ok   js\ui\Menu.js
+  ok   js\ui\PausePanel.js
+  ok   js\ui\ResultPanel.js
+  ok   js\ui\TouchControls.js
+  ok   js\ui\UpgradePanel.js
+  ok   tools\check-syntax.mjs
+
+语法检查：35 个文件，失败 0 个
