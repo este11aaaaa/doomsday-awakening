@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>末日重启：觉醒者 · 试玩</title>
+<link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
+<style>
+  :root {
+    --ink: #06090a;
+    --line: rgba(120, 200, 160, .18);
+    --green: #6dfba4;
+    --text: #dbe7dd;
+    --muted: #8fa294;
+    --mono: "JetBrains Mono", Consolas, monospace;
+    --sans: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%;
+    background: radial-gradient(120% 90% at 50% 0%, #0f1613 0%, #070a09 60%, #040605 100%);
+    color: var(--text); font-family: var(--sans);
+    display: grid; place-items: center;
+  }
+  .stage {
+    width: min(1180px, 94vw);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border: 1px solid var(--line);
+    box-shadow: 0 40px 90px -40px #000, inset 0 0 0 1px rgba(255,255,255,.03);
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+  }
+  .frame iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; border: 0; display: block;
+    background: #080b09;
+  }
+  .poster {
+    position: absolute; inset: 0;
+    background: url("../docs/screenshot-03-combat.png") center/cover no-repeat;
+    display: grid; place-items: center;
+    cursor: pointer;
+    transition: opacity .25s ease;
+  }
+  .poster::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 45%, rgba(6,12,9,.55) 0%, rgba(4,8,6,.92) 72%),
+      linear-gradient(180deg, rgba(4,8,6,.72), rgba(4,8,6,.9));
+  }
+  .poster-inner { position: relative; z-index: 1; text-align: center; }
+  .poster-kicker {
+    font: 700 10px/1 var(--mono); letter-spacing: .42em;
+    color: rgba(109,251,164,.7); padding-left: .42em;
+  }
+  .poster-title {
+    margin: 10px 0 6px; font-size: clamp(20px, 3vw, 34px); font-weight: 800;
+    letter-spacing: .1em; color: #eafff1; text-shadow: 0 0 28px rgba(53,224,122,.35);
+  }
+  .poster-sub { font-size: 12.5px; color: var(--muted); letter-spacing: .06em; }
+  .play {
+    margin-top: 18px; display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 26px; border: 0; cursor: pointer;
+    background: linear-gradient(180deg, #35e07a, #1f9a54);
+    color: #05150c; font: 700 14px/1 var(--sans); letter-spacing: .18em;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    transition: transform .12s ease, filter .12s ease;
+  }
+  .play:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .poster.hidden { opacity: 0; pointer-events: none; }
+  .poster.loading .play::after { content: " 加载中…"; }
+
+  .bar {
+    display: flex; flex-wrap: wrap; gap: 10px 18px;
+    align-items: center; justify-content: space-between;
+    font: 500 11.5px/1.6 var(--sans); color: var(--muted);
+  }
+  .keys { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  kbd {
+    display: inline-block; min-width: 18px; padding: 1px 6px; margin-right: 3px;
+    font: 700 10.5px/1.7 var(--mono); text-align: center;
+    color: #d8ffe8; background: rgba(53,224,122,.13);
+    border: 1px solid rgba(109,251,164,.28);
+  }
+  .actions { display: flex; gap: 8px; }
+  .btn {
+    padding: 7px 14px; cursor: pointer;
+    font: 600 11.5px/1 var(--sans); letter-spacing: .1em;
+    color: #cfe4d7; background: rgba(20,32,26,.7);
+    border: 1px solid rgba(140,200,165,.24);
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  }
+  .btn:hover { color: #eafff1; border-color: rgba(109,251,164,.5); }
+  .note { font: 500 10.5px/1.7 var(--mono); color: rgba(143,162,148,.55); }
+
+  @media (max-width: 720px) {
+    .stage { width: 100vw; gap: 10px; }
+    .frame { aspect-ratio: 4 / 3; clip-path: none; border-left: 0; border-right: 0; }
+    .bar { padding: 0 14px; }
+    .keys { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="frame" id="frame">
+      <iframe
+        id="game"
+        data-src="../index.html"
+        title="末日重启：觉醒者 — 可玩 Demo"
+        allow="fullscreen; autoplay; gamepad; xr-spatial-tracking"
+        allowfullscreen
+        loading="lazy"></iframe>
+
+      <div class="poster" id="poster">
+        <div class="poster-inner">
+          <div class="poster-kicker">CHAPTER 01 · SUPERMARKET BREAKOUT</div>
+          <h1 class="poster-title">末日重启：觉醒者</h1>
+          <div class="poster-sub">HTML5 末世丧尸射击 · 键鼠 / 触屏双端 · 无框架</div>
+          <button class="play" id="play" type="button">▶ 开始试玩</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bar">
+      <div class="keys">
+        <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移动</span>
+        <span><kbd>鼠标</kbd> 瞄准 · 按住左键射击</span>
+        <span><kbd>R</kbd> 换弹</span>
+        <span><kbd>E</kbd> 拾取</span>
+        <span><kbd>Q</kbd> 脉冲</span>
+        <span><kbd>ESC</kbd> 暂停</span>
+      </div>
+      <div class="actions">
+        <button class="btn" id="fullscreen" type="button">全屏</button>
+        <button class="btn" id="restart" type="button">重开</button>
+        <button class="btn" id="open" type="button">新窗口</button>
+      </div>
+    </div>
+    <div class="note">手机端建议点「新窗口」横屏游玩；触屏为左移动 / 右瞄准双摇杆。</div>
+  </div>
+
+<script>
+  const frame = document.getElementById('frame');
+  const iframe = document.getElementById('game');
+  const poster = document.getElementById('poster');
+
+  let started = false;
+  function start() {
+    if (!started) {
+      started = true;
+      iframe.src = iframe.dataset.src;
+      poster.classList.add('loading');
+      iframe.addEventListener('load', () => poster.classList.remove('loading'), { once: true });
+    }
+    poster.classList.add('hidden');
+    // 让 iframe 拿到焦点，否则键盘事件到不了游戏
+    setTimeout(() => {
+      try { iframe.contentWindow.focus(); } catch (err) { /* 跨域时忽略 */ }
+      iframe.focus();
+    }, 400);
+  }
+
+  document.getElementById('play').addEventListener('click', (e) => {
+    e.stopPropagation();
+    start();
+  });
+  poster.addEventListener('click', start);
+
+  document.getElementById('fullscreen').addEventListener('click', async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await frame.requestFullscreen();
+    } catch (err) { /* 用户拒绝或不支持 */ }
+  });
+
+  document.getElementById('restart').addEventListener('click', () => {
+    // 重新加载 iframe = 回到主菜单，同时清掉本局状态
+    if (started) iframe.src = iframe.dataset.src;
+    poster.classList.remove('hidden');
+  });
+
+  document.getElementById('open').addEventListener('click', () => {
+    window.open(iframe.dataset.src, '_blank', 'noopener');
+  });
+
+  // 支持 ?play=1 直接进入游戏（用于作品集里"点击即玩"的卡片）
+  if (new URLSearchParams(location.search).get('play') === '1') start();
+</script>
+</body>
+</html>
